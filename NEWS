@@ -1,0 +1,15 @@
+NEWS: LIBCASSAVA                                                    15.03.2012
+===============================================================================
+
+# 0.1.0  (15. March 2012)
+Marks the first library release of libcassava. The following header files are
+of interest, and are located in ${PREFIX}/lib/libcassava:
+
+    config_kv.h
+    list.h
+    list_str.h
+    string.h
+    util.h
+
+This is an unstable library. Don't consider really using it until it has
+reached version 1!

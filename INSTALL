@@ -1,0 +1,16 @@
+LIBCASSAVA INSTALLATION INSTRUCTIONS                               15.03.2012
+===============================================================================
+
+### Dependancies
+  - n/a
+
+### Installation
+  - Typical install method, though without the ./configure step:
+        make
+        make install PREFIX=/usr/local
+  - You may be interested in looking at the Makefiles. They are quite simple!
+
+### Post-Installation
+  - You should have headers installed to ${PREFIX}/include/libcassava.
+    Have a look at them if you want to use the functions in them.
+

@@ -1,0 +1,9 @@
+TODO: LIBCASSAVA
+=======================================================================
+
+    1. Write good documentation for the library using doxygen.
+
+    2. Have a look at the functions in util.c, they could be rewritten
+       more nicely and elegantly.
+
+    3. Consider using libtool and automake.
