@@ -1,3 +1,4 @@
+dist/
 src/*.o
 src/libcassava.a
 src/libcassava.so
