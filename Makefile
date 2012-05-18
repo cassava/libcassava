@@ -30,7 +30,7 @@ uninstall:
 
 clean:
 	make -C src/ clean
-	test -d dist && rm -rf dist
-	test -w libcassava-${VERSION}.tar.gz && rm libcassava-${VERSION}.tar.gz
+	test -d dist && rm -rf dist || true
+	test -f libcassava-${VERSION}.tar.gz && rm libcassava-${VERSION}.tar.gz || true
 
 # vim: set noet:

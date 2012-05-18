@@ -30,8 +30,8 @@ util.o: list.h list_str.h string.h util.h util.c
 	${CC} ${CFLAGS} util.c
 
 clean:
-	rm ${objects}
-	rm libcassava.so
-	rm libcassava.a
+	for file in ${objects} libcassava.a libcassava.so; do \
+		test -f $$file && echo "rm $$file" && rm $$file || continue; \
+	done
 
 # vim: set noet:
