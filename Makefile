@@ -4,10 +4,14 @@ INCLUDE_DIR = ${PREFIX}/include
 
 VERSION = 0.2.0
 
-.PHONY: all install uninstall clean dist
+.PHONY: all install uninstall clean dist doc
 
 all:
 	make -C src/
+
+doc:
+	test -d dist || mkdir dist
+	doxygen Doxyfile
 
 dist:
 	install -d dist
