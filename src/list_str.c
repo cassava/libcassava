@@ -1,5 +1,6 @@
 /*
  * libcassava/list_str.c
+ * vim: set cin ts=4 sw=4 et:
  *
  * Copyright (c) 2011-2012 Ben Morgan <neembi@googlemail.com>
  *
@@ -30,30 +31,32 @@
 #include <sys/stat.h>
 
 
-void list_print(NodeStr *head, const char *sep)
+void list_print(const NodeStr *head, const char *sep)
 {
-    NodeStr *iter;
+    const NodeStr *iter;
 
-    assert(sep != NULL);
+    if (sep == NULL)
+        sep = "";
 
     for (iter = head; iter->next != NULL; iter = iter->next)
         printf("%s%s", iter->data, sep);
     puts(iter->data);
 }
 
-void list_println(NodeStr *head, const char *prefix)
+void list_println(const NodeStr *head, const char *prefix)
 {
-    NodeStr *iter;
+    const NodeStr *iter;
 
-    assert(prefix != NULL);
+    if (prefix == NULL)
+        prefix = "";
 
     for (iter = head; iter != NULL; iter = iter->next)
         printf("%s%s\n", prefix, iter->data);
 }
 
-NodeStr *list_search(NodeStr *haystack, const char *needle)
+const NodeStr *list_search(const NodeStr *haystack, const char *needle)
 {
-    NodeStr *iter;
+    const NodeStr *iter;
 
     assert(needle != NULL);
 
@@ -64,13 +67,13 @@ NodeStr *list_search(NodeStr *haystack, const char *needle)
     return NULL;
 }
 
-char *list_strjoin(NodeStr *head, const char *delim)
+char *list_strjoin(const NodeStr *head, const char *delim)
 {
     char *str, *t;
     const char *s;
     size_t len = 1;
     size_t m, n;
-    NodeStr *node;
+    const NodeStr *node;
 
     n = list_length(head);
     if (n == 0)
@@ -95,7 +98,7 @@ char *list_strjoin(NodeStr *head, const char *delim)
     return str;
 }
 
-int list_filter_destroy(NodeStr **head, const char *regex)
+int list_filter_regex(NodeStr **head, const char *regex)
 {
     char errbuf[MAX_ERROR_LINE_LENGTH];      /* for holding error messages by regex.h */
     int errcode;
@@ -142,5 +145,3 @@ int list_filter_destroy(NodeStr **head, const char *regex)
         current->next = NULL;
     return count;
 }
-
-/* vim: set cin ts=4 sw=4 et: */

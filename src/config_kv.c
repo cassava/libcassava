@@ -1,14 +1,6 @@
 /*
  * libcassava/config_kv.c
- * For parsing the configuration file.
  *
- * Spaces and comments starting with # are ignored.  Comments must be by
- * themselves on a line.  Keys are separated from values by the '=' character,
- * and may contain any character except the '=' character.  The value may
- * contain any character, but is ended by a newline.
- */
-
-/*
  * Copyright (c) 2011 Ben Morgan <neembi@googlemail.com>
  *
  * Permission to use, copy, modify, and/or distribute this software for any
@@ -22,6 +14,24 @@
  * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION
  * OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN
  * CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+ */
+
+/**
+ * \file
+ * For parsing simple configuration files.
+ *
+ * Spaces and comments starting with # are ignored.  Comments must be by
+ * themselves on a line.  Keys are separated from values by the '=' character,
+ * and may contain any character except the '=' character.  The value may
+ * contain any character, but is ended by a newline.
+ *
+ * Example:
+ *
+ *     # This is a comment, and the following is a valid statement:
+ *     key = my value till the end
+ *
+ *     # The following is likely wrong:
+ *     key two = "This is probably not what you want"
  */
 
 #include "config_kv.h"

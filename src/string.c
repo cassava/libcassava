@@ -25,6 +25,18 @@
 #include <string.h>
 
 
+char *cs_strclone(const char *input)
+{
+    size_t len;
+    char *clone;
+
+    len = strlen(input);
+    clone = malloc(sizeof (char) * (len+1));
+    if (clone != NULL)
+        strcpy(clone, input);
+    return clone;
+}
+
 char *cs_strcat(const char *f1, const char *f2)
 {
     size_t len;

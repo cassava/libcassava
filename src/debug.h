@@ -35,7 +35,7 @@
 #define DEBUG_FILENO_ __FILE__ " (" STRINGIFY_LEVEL0_(__LINE__) "): "
 
 #define debug(...) __VA_ARGS__
-#define debug_puts(str) puts(_DEBUG_FILENO str)
+#define debug_puts(str) puts(DEBUG_FILENO_ str)
 #define debug_printf(...) fprintf(stderr, DEBUG_FILENO_ __VA_ARGS__)
 
 #endif /* NDEBUG */

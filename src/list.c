@@ -1,5 +1,6 @@
 /*
  * libcassava/list.c
+ * vim: set cin ts=4 sw=4 cc=101 et:
  *
  * Copyright (c) 2011-2012 Ben Morgan <neembi@googlemail.com>
  *
@@ -42,12 +43,12 @@ struct list_node *list_node()
     return ptr;
 }
 
-bool list_empty(struct list_node *head)
+bool list_empty(const struct list_node *head)
 {
     return (head == NULL);
 }
 
-size_t list_length(struct list_node *head)
+size_t list_length(const struct list_node *head)
 {
     size_t n = 0;
 
@@ -58,35 +59,37 @@ size_t list_length(struct list_node *head)
     return n;
 }
 
-void **list_to_array(struct list_node *head)
+size_t list_to_array(const struct list_node *head, void ***output)
 {
-    struct list_node *iter;
+    assert(output != NULL);
+
+    const struct list_node *iter;
     size_t count = 1;
-    void **array;
 
     /* count how many non-NULL items there are */
-    for (iter = head; iter != NULL; iter = head->next)
+    for (iter = head; iter != NULL; iter = iter->next)
         if (iter->data != NULL)
             count++;
 
     /* add all non-NULL items to array and terminate with NULL */
-    array = malloc(count * sizeof (void *));
+    *output = malloc(count * sizeof (void *));
     if (count > 1) {
         size_t index = 0;
-        for (iter = head; iter != NULL; iter = head->next)
+        for (iter = head; iter != NULL; iter = iter->next)
             if (iter->data != NULL)
-                array[index++] = iter->data;
+                (*output)[index++] = iter->data;
     }
-    array[count] = NULL;
+    (*output)[count-1] = NULL;
 
-    return array;
+    return count-1;
 }
 
 void list_push(struct list_node **head, void *data)
 {
+    assert(head != NULL);
+
     struct list_node *node = list_node();
     node->data = data;
-    assert(head != NULL);
 
     node->next = *head;
     *head = node;
@@ -94,10 +97,11 @@ void list_push(struct list_node **head, void *data)
 
 void *list_pop(struct list_node **head)
 {
+    assert(head != NULL);
+
     struct list_node *next;
     void *data;
 
-    assert(head != NULL);
     if (list_empty(*head))
         return NULL;
 
@@ -129,10 +133,11 @@ void list_insert(struct list_node **head, struct list_node *node)
 
 struct list_node *list_remove(struct list_node **head)
 {
+    assert(head != NULL);
+
     struct list_node *top;
     struct list_node *next;
 
-    assert(head != NULL);
     if (list_empty(*head))
         return NULL;
 
@@ -143,9 +148,41 @@ struct list_node *list_remove(struct list_node **head)
     return top;
 }
 
+size_t list_filter(struct list_node **head, bool (*filter)(void *, void *), void *arguments)
+{
+    assert(head != NULL);
+    assert(filter != NULL);
+
+    struct list_node *current = NULL;
+    struct list_node *iter = *head;
+    size_t count = 0;
+    while (iter != NULL) {
+        if (filter(iter->data, arguments)) {
+            if (current == NULL) {
+                current = iter;
+                *head = current;
+            } else {
+                current->next = iter;
+                current = current->next;
+            }
+            iter = iter->next;
+            current->next = NULL;
+            ++count;
+        } else {
+            struct list_node *prev = iter;
+            iter = iter->next;
+            free(prev->data);
+            free(prev);
+        }
+    }
+
+    return count;
+}
+
 void list_free_nodes(struct list_node **head)
 {
     assert(head != NULL);
+
     while (*head != NULL) {
         struct list_node *temp = (*head)->next;
         free(*head);
@@ -157,6 +194,7 @@ void list_free_nodes(struct list_node **head)
 void list_free_all(struct list_node **head)
 {
     assert(head != NULL);
+
     while (*head != NULL) {
         struct list_node *temp;
         if ((*head)->data != NULL)
@@ -167,5 +205,3 @@ void list_free_all(struct list_node **head)
     }
     *head = NULL;
 }
-
-/* vim: set cin ts=4 sw=4 et: */

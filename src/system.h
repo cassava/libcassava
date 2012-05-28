@@ -19,22 +19,99 @@
 
 /**
  * \file
- * Functions that are pertinent to the system.
+ * Functions that are pertinent to the system and the filesystem.
  *
  * \author Ben Morgan
- * \date 2012
+ * \date 28. May 2012
  */
 
 #ifndef LIBCASSAVA_SYSTEM_H
 #define LIBCASSAVA_SYSTEM_H
 
+#include <assert.h>
+#include <regex.h>
+#include <stdbool.h>
+
+#include "list.h"
+#include "list_str.h"
+
 /**
  * Get the number of columns in the current terminal.
  * This also works correctly if the terminal has been resized.
+ *
+ * If you call this, and stdout is a file for example, then it will return 0,
+ * because there is no reasonable input. In that case you ought to think up a
+ * reasonable default, 80 for example.
  *
  * \return Number of columns in current terminal.
  */
 extern unsigned short get_terminal_columns();
 
-#endif /* LIBCASSAVA_SYSTEM_H */
+extern int read_directory(const char *path, NodeStr **head, bool full_pathnames);
 
+inline int get_filenames(const char *path, NodeStr **head)
+{
+    return read_directory(path, head, false);
+}
+
+inline int get_filenames_filter(const char *path,
+                                NodeStr **head,
+                                bool (*filter)(void *path, void *arguments),
+                                void *arguments)
+{
+    assert(filter != NULL);
+
+    int count = get_filenames(path, head);
+    if (count > 0)
+        count = list_filter(head, filter, arguments);
+    return count;
+}
+
+inline int get_filepaths(const char *path, NodeStr **head)
+{
+    return read_directory(path, head, true);
+}
+
+inline int get_filepaths_filter(const char *path,
+                                NodeStr **head,
+                                bool (*filter)(void *path, void *arguments),
+                                void *arguments)
+{
+    assert(filter != NULL);
+
+    int count = get_filepaths(path, head);
+    if (count > 0)
+        count = list_filter(head, filter, arguments);
+    return count;
+}
+
+extern int read_directory_filter_regex(const char *path, NodeStr **head, const char *regex, bool full_pathnames);
+
+inline int get_filepaths_filter_regex(const char *path, NodeStr **head, const char *regex)
+{
+    return read_directory_filter_regex(path, head, regex, true);
+}
+
+inline int get_filenames_filter_regex(const char *path, NodeStr **head, const char *regex)
+{
+    return read_directory_filter_regex(path, head, regex, false);
+}
+
+extern bool filter_isreg(void *filepath, void *);
+
+extern bool filter_isdir(void *filepath, void *);
+
+struct filter_regex_args {
+    regex_t preg;
+};
+
+extern bool filter_regex(void *filepath, void *arguments);
+
+struct filter_time_args {
+    time_t time;
+    int comparison;
+};
+
+extern bool filter_mtime(void *filepath, void *arguments);
+
+#endif /* LIBCASSAVA_SYSTEM_H */

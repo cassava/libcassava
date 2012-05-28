@@ -1,5 +1,6 @@
 /*
  * libcassava/util.c
+ * vim: set cin ts=4 sw=4 et cc=101:
  *
  * Copyright (c) 2011-2012 Ben Morgan <neembi@googlemail.com>
  *
@@ -17,145 +18,86 @@
  */
 
 #include "util.h"
-#include "list.h"
-#include "list_str.h"
-#include "string.h"
 
-#include <dirent.h>
-#include <regex.h>
+#include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <sys/stat.h>
+
+#include "string.h"
+#include "system.h"
+#include "debug.h"
 
 
-/*
- * TODO: This can be implemented much more elegantly.
+/**
+ * Return the sum over an array of size_t.
  */
-int get_regex_files(const char *regex, const char *dir, NodeStr **head)
+static unsigned sum_over(const size_t *array, size_t len)
 {
-    char errbuf[MAX_ERROR_LINE_LENGTH];      /* for holding error messages by regex.h */
-    struct dirent *entry;
-    int errcode, count, complete;
-    NodeStr *current;
-    regex_t preg;
-    DIR *dp;
-
-    /* initialize head and count */
-    *head = NULL;
-    count = 0;
-
-    /* open db dir */
-    dp = opendir(dir);
-    if (dp == NULL) {
-        perror("Error (opendir)");
-        return -1;
-    }
-
-    /* compile regex */
-    errcode = regcomp(&preg, regex, REG_EXTENDED);
-    if (errcode != 0) {
-        regerror(errcode, &preg, errbuf, sizeof errbuf);
-        fprintf(stderr, "Error (regcomp): %s\n", errbuf);
-        return -1;
-    }
-
-    current = NULL;
-    complete = (*(dir+strlen(dir)-1) == '/');
-    while ((entry = readdir(dp)) != NULL) {
-        /* make sure type is not dir, then do a regex on it */
-        struct stat fstat;
-        char *path = cs_strvcat(dir, complete ? "" : "/", entry->d_name, NULL);
-        if (stat(path, &fstat) != 0) {
-            perror("Error (stat)");
-            free(path);
-            return -1;
-        }
-        if (! S_ISREG(fstat.st_mode))
-            goto free_path_continue;
-
-        errcode = regexec(&preg, entry->d_name, 0, NULL, 0);
-        if (errcode == 0) {
-            NodeStr *new = list_node();
-            new->data = path;
-            if (current == NULL) {
-                *head = current = new;
-            } else {
-                current->next = new;
-                current = new;
-            }
-            count++;
-        } else if (errcode == REG_NOMATCH) {
-            goto free_path_continue;
-        } else {
-            free(path);
-            regerror(errcode, &preg, errbuf, sizeof errbuf);
-            fprintf(stderr, "Error (regexec): %s\n", errbuf);
-            return -1;
-        }
-        continue;
-
-    free_path_continue:
-        free(path);
-    }
-
-    closedir(dp);
-    regfree(&preg);
-    if (current != NULL)
-        current->next = NULL;
-    return count;
+    size_t i, sum = 0;
+    for (i = 0; i < len; i++)
+        sum += array[i];
+    return sum;
 }
 
-int get_younger_files(const time_t age, const char *dir, NodeStr **head)
+/**
+ * Put a string left aligned to stdout, padding the right with spaces.
+ */
+static void putfill(const char *string, size_t size)
 {
-    struct dirent *entry;
-    DIR *dp;
-    int count, complete;
-    NodeStr *current;
+    size_t i;
 
-    /* initialize head and count */
-    *head = NULL;
-    count = 0;
-
-    /* open db dir */
-    dp = opendir(dir);
-    if (dp == NULL) {
-        perror("Error (opendir)");
-        return -1;
-    }
-
-    current = NULL;
-    complete = (*(dir+strlen(dir)-1) == '/');
-    while ((entry = readdir(dp)) != NULL) {
-        /* make sure type is not dir, then compare ages */
-        struct stat fstat;
-        char *path = cs_strvcat(dir, complete ? "" : "/", entry->d_name, NULL);
-        if (stat(path, &fstat) != 0) {
-            perror("Error (stat)");
-            free(path);
-            return -1;
-        }
-
-        if (S_ISREG(fstat.st_mode) && fstat.st_mtime > age) {
-            NodeStr *new = list_node();
-            new->data = path;
-            if (current == NULL) {
-                *head = current = new;
-            } else {
-                current->next = new;
-                current = new;
-            }
-            count++;
-            continue;
-        }
-
-        free(path);
-    }
-
-    closedir(dp);
-    if (current != NULL)
-        current->next = NULL;
-    return count;
+    for (i = 0; *string != '\0'; i++)
+        putchar(*string++);
+    while (i++ < size)
+        putchar(' ');
 }
 
-/* vim: set cin ts=4 sw=4 et: */
+/**
+ * \details The implementation of this function takes \$ O(n^2) \$ time.
+ *
+ * TODO Test extreme cases: with 0 elements and with 1 elements.
+ */
+void print_columns(char **array, size_t len)
+{
+#define pos(col, row) (col)*(num_rows) + (row)
+    size_t *str_len = malloc(sizeof(size_t) * len);
+    size_t *col_len = malloc(sizeof(size_t) * len);
+    size_t num_cols = len, num_rows, col, row, i;
+
+    for (i = 0; i < len; i++)
+        str_len[i] = strlen(array[i]);
+
+    /* Find out how many columns/rows we will have: */
+    size_t term_width = get_terminal_columns();
+    if (term_width == 0) term_width = 80;
+    for (num_rows = 1; num_rows < len; num_rows++) {
+        num_cols = ceil(((double)len)/num_rows);
+        for (col = 0; col < num_cols; col++)
+            col_len[col] = 0;
+
+        for (col = 0; col < num_cols; col++) {
+            for (row = 0; row < num_rows && (i = pos(col, row)) < len; row++) {
+                if (str_len[i] > col_len[col])
+                    col_len[col] = str_len[i];
+            }
+        }
+
+        /* I am leaving PRINT_COLUMNS_SEP_WIDTH + 1 columns on the edge for readability! */
+        if ((sum_over(col_len, num_cols) + PRINT_COLUMNS_SEP_WIDTH*num_cols) < term_width) {
+            break;
+        }
+    }
+
+    /* Print the strings in columns: */
+    for (row = 0; row < num_rows; row++) {
+        /* TODO: prevent printing of two spaces at the end! */
+        for (col = 0; col < num_cols && (i = pos(col, row)) < len; col++)
+            putfill(array[i], col_len[col] + PRINT_COLUMNS_SEP_WIDTH);
+        putchar('\n');
+    }
+
+    free(str_len);
+    free(col_len);
+#undef pos
+}

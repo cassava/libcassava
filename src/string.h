@@ -1,12 +1,6 @@
 /*
  * libcassava/string.h
- * Various helpful string functions.
  *
- * Note: the function names are all prefixed with cs_ to avoid collisions with
- * other functions in string.h or other libraries. Think cassava string.
- */
-
-/*
  * Copyright (c) 2011-2012 Ben Morgan <neembi@googlemail.com>
  *
  * Permission to use, copy, modify, and/or distribute this software for any
@@ -22,10 +16,31 @@
  * CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+/**
+ * \file
+ * Various helpful string functions.
+ *
+ * \note The function names are all prefixed with cs_ to avoid collisions with
+ * other functions in string.h or other libraries. Think cassava string.
+ *
+ * \author Ben Morgan
+ * \date 28. May 2012
+ */
+
 #ifndef LIBCASSAVA_STRING_H
 #define LIBCASSAVA_STRING_H
 
 #include <stdbool.h>
+
+/**
+ * Returns an a string which has been cloned (copied) into a dynamically
+ * allocated storage block. On any kind of fail, \c NULL is returned.
+ *
+ * \param input String to clone.
+ * \return Dynamically allocated clone of string \a input.
+ * \note The returned string must be freed using \c free().
+ */
+extern char *cs_strclone(const char *input);
 
 /*
  * cs_strcat: concatenates two strings.
