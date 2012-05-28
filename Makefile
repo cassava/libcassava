@@ -2,18 +2,20 @@ PREFIX = /usr/local
 LIB_DIR = ${PREFIX}/lib
 INCLUDE_DIR = ${PREFIX}/include
 
-VERSION = 0.2.0
+VERSION = 1.0.0
 
-.PHONY: all install uninstall clean dist doc
+.PHONY: all lib install uninstall clean dist doc
 
-all:
+all: dist doc
+
+lib:
 	make -C src/
 
 doc:
 	test -d dist || mkdir dist
 	doxygen Doxyfile
 
-dist:
+dist: lib
 	install -d dist
 	install -m644 src/*.h dist/
 	install -m644 src/libcassava.so dist/libcassava.so.${VERSION}

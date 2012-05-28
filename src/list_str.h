@@ -31,10 +31,8 @@
 #ifndef LIBCASSAVA_LIST_STR_H
 #define LIBCASSAVA_LIST_STR_H
 
+#include <regex.h>
 #include <stdbool.h>
-
-/** Maximum error line length printed by regex errors. */
-#define MAX_ERROR_LINE_LENGTH 80
 
 
 /**
@@ -83,6 +81,36 @@ extern const NodeStr *list_search(const NodeStr *haystack, const char *needle);
  * \return Newly allocated string (don't forget to free() it).
  */
 extern char *list_strjoin(const NodeStr *head, const char *sep);
+
+/**
+ * Arguments for the filter_regex function, which need to be passed
+ * along with list_filter.
+ *
+ * \see filter_regex
+ */
+struct filter_regex_args {
+    regex_t preg;
+};
+
+/**
+ * A filter function for list_filter, to keep all nodes satisfying a regular expression.
+ *
+ * \param string    String to match to (the victim).
+ * \param arguments Pointer to a struct filter_regex_args with a compiled regular
+ *                  expression.
+ * \return True if \a filepath matches the regex compiled in \a arguments->preg.
+ *
+ * \b Example:
+ * \code
+ *     NodeStr *head;
+ *     struct filter_regex_args args;
+ *     int errcode = regcomp(&args.preg, regex, REG_EXTENDED);
+ *     int retval = list_filter(&head, filter_regex, (void *)&args);
+ *     regfree(&args.preg);
+ *     list_free_all(head);
+ * \endcode
+ */
+extern bool filter_regex(void *string, void *arguments);
 
 /**
  * Filter nodes in head with regex; only nodes matching regex are allowed.

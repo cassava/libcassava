@@ -98,50 +98,35 @@ char *list_strjoin(const NodeStr *head, const char *delim)
     return str;
 }
 
+bool filter_regex(void *string, void *arguments)
+{
+    assert(string != NULL);
+    assert(arguments != NULL);
+    struct filter_regex_args *args = (struct filter_regex_args *)arguments;
+
+    int errcode = regexec(&args->preg, string, 0, NULL, 0);
+    return (errcode == 0);
+}
+
 int list_filter_regex(NodeStr **head, const char *regex)
 {
-    char errbuf[MAX_ERROR_LINE_LENGTH];      /* for holding error messages by regex.h */
-    int errcode;
-    int count = 0;
-    NodeStr *current;
-    NodeStr *iter;
+    assert(head != NULL);
+    assert(regex != NULL);
 
-    /* compile regex */
-    regex_t preg;
-    errcode = regcomp(&preg, regex, REG_EXTENDED);
+    int retval;
+    struct filter_regex_args args;
+    int errcode = regcomp(&args.preg, regex, REG_EXTENDED);
     if (errcode != 0) {
-        regerror(errcode, &preg, errbuf, sizeof errbuf);
+        char errbuf[BUFSIZ];
+        regerror(errcode, &args.preg, errbuf, sizeof errbuf);
         fprintf(stderr, "Error (regcomp): %s\n", errbuf);
-        return -1;
+        retval = -1;
+        goto finally;
     }
 
-    current = NULL;
-    iter = *head;
-    while (iter != NULL) {
-        errcode = regexec(&preg, iter->data, 0, NULL, 0);
-        if (errcode == 0) {
-            if (current == NULL) {
-                *head = current = iter;
-            } else {
-                current->next = iter;
-                current = iter;
-            }
-            count++;
-            iter = iter->next;
-        } else if (errcode == REG_NOMATCH) {
-            NodeStr *temp = iter->next;
-            free(iter->data);
-            free(iter);
-            iter = temp;
-        } else {
-            regerror(errcode, &preg, errbuf, sizeof errbuf);
-            fprintf(stderr, "Error (regexec): %s\n", errbuf);
-            return -1;
-        }
-    }
+    retval = list_filter(head, filter_regex, (void *)&args);
 
-    regfree(&preg);
-    if (current != NULL)
-        current->next = NULL;
-    return count;
+finally:
+    regfree(&args.preg);
+    return retval;
 }

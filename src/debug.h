@@ -23,8 +23,8 @@
 #define VOID_POINTER_CAST_ (void) (0)
 
 #define debug(...) VOID_POINTER_CAST_
-#define debug_puts(str) _VOID_POINTER_CAST_
-#define debug_printf(...) _VOID_POINTER_CAST_
+#define debug_puts(str) VOID_POINTER_CAST_
+#define debug_printf(...) VOID_POINTER_CAST_
 
 #else
 

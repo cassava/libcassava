@@ -28,45 +28,26 @@
 #include "system.h"
 #include "debug.h"
 
-
-/**
- * Return the sum over an array of size_t.
- */
-static unsigned sum_over(const size_t *array, size_t len)
-{
-    size_t i, sum = 0;
-    for (i = 0; i < len; i++)
-        sum += array[i];
-    return sum;
-}
-
-/**
- * Put a string left aligned to stdout, padding the right with spaces.
- */
-static void putfill(const char *string, size_t size)
-{
-    size_t i;
-
-    for (i = 0; *string != '\0'; i++)
-        putchar(*string++);
-    while (i++ < size)
-        putchar(' ');
-}
+static unsigned sum_over(const size_t *array, size_t len);
+static void putfill(const char *string, size_t size);
 
 /**
  * \details The implementation of this function takes \$ O(n^2) \$ time.
  *
- * TODO Test extreme cases: with 0 elements and with 1 elements.
+ * TODO Test extreme cases: with 0 elements.
  */
 void print_columns(char **array, size_t len)
 {
 #define pos(col, row) (col)*(num_rows) + (row)
-    size_t *str_len = malloc(sizeof(size_t) * len);
-    size_t *col_len = malloc(sizeof(size_t) * len);
+    assert(array != NULL);
+
+    size_t str_len[len], col_len[len];
     size_t num_cols = len, num_rows, col, row, i;
 
-    for (i = 0; i < len; i++)
+    for (i = 0; i < len; i++) {
         str_len[i] = strlen(array[i]);
+        col_len[i] = 0;
+    }
 
     /* Find out how many columns/rows we will have: */
     size_t term_width = get_terminal_columns();
@@ -90,14 +71,44 @@ void print_columns(char **array, size_t len)
     }
 
     /* Print the strings in columns: */
+    /* TODO: prevent printing of two spaces at the end! */
+    debug_printf("len = %u, num_cols = %u, num_rows = %u\n", len, num_cols, num_rows);
     for (row = 0; row < num_rows; row++) {
-        /* TODO: prevent printing of two spaces at the end! */
-        for (col = 0; col < num_cols && (i = pos(col, row)) < len; col++)
-            putfill(array[i], col_len[col] + PRINT_COLUMNS_SEP_WIDTH);
+        for (col = 0; col < num_cols; col++) {
+            size_t idx = pos(col, row);
+            if (idx < len)
+                putfill(array[idx], col_len[col] + PRINT_COLUMNS_SEP_WIDTH);
+            else
+                break;
+        }
         putchar('\n');
     }
-
-    free(str_len);
-    free(col_len);
 #undef pos
+}
+
+/**
+ * Return the sum over an array of size_t.
+ */
+static unsigned sum_over(const size_t *array, size_t len)
+{
+    assert(array != NULL);
+
+    size_t i, sum = 0;
+    for (i = 0; i < len; i++)
+        sum += array[i];
+    return sum;
+}
+
+/**
+ * Put a string left aligned to stdout, padding the right with spaces.
+ */
+static void putfill(const char *string, size_t size)
+{
+    assert(string != NULL);
+
+    size_t i = 0;
+    for (; *string != '\0'; i++)
+        putchar(*string++);
+    while (i++ < size)
+        putchar(' ');
 }

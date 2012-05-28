@@ -78,11 +78,12 @@ int read_directory(const char *path, NodeStr **head, bool full_pathnames)
             *head = current = new;
         } else {
             current->next = new;
-            current = new;
+            current = current->next;
         }
         ++count;
     }
 
+    closedir(dp);
     return count;
 
 error:
@@ -94,19 +95,25 @@ int read_directory_filter_regex(const char *path, NodeStr **head, const char *re
 {
     assert(regex != NULL);
 
+    int retval;
     struct filter_regex_args args;
     int errcode = regcomp(&args.preg, regex, REG_EXTENDED);
     if (errcode != 0) {
         char errbuf[BUFSIZ];
         regerror(errcode, &args.preg, errbuf, sizeof errbuf);
         fprintf(stderr, "Error (regcomp): %s\n", errbuf);
-        return -1;
+        retval = -1;
+        goto finally;
     }
 
     if (full_pathnames)
-        return get_filepaths_filter(path, head, filter_regex, (void *)&args);
+        retval = get_filepaths_filter(path, head, filter_regex, (void *)&args);
     else
-        return get_filenames_filter(path, head, filter_regex, (void *)&args);
+        retval = get_filenames_filter(path, head, filter_regex, (void *)&args);
+
+finally:
+    regfree(&args.preg);
+    return retval;
 }
 
 #pragma GCC diagnostic push
@@ -124,15 +131,6 @@ bool filter_isreg(void *filepath, void *unused)
     return isdir(filepath) == 0;
 }
 #pragma GCC diagnostic pop
-
-bool filter_regex(void *filepath, void *arguments)
-{
-    assert(arguments != NULL);
-    struct filter_regex_args *args = (struct filter_regex_args *)arguments;
-
-    int errcode = regexec(&args->preg, filepath, 0, NULL, 0);
-    return (errcode == 0);
-}
 
 bool filter_mtime(void *filepath, void *arguments)
 {

@@ -31,12 +31,13 @@
 #define LIBCASSAVA_STRING_H
 
 #include <stdbool.h>
+#include <stdlib.h>
 
 /**
  * Returns an a string which has been cloned (copied) into a dynamically
  * allocated storage block. On any kind of fail, \c NULL is returned.
  *
- * \param input String to clone.
+ * \param input String to clone. \a input should not be \c NULL.
  * \return Dynamically allocated clone of string \a input.
  * \note The returned string must be freed using \c free().
  */
@@ -92,6 +93,14 @@ extern char *cs_substr(const char * /*input*/, unsigned /*start_offset*/, unsign
  *           returned, otherwise true.
  */
 extern bool cs_isprefix(const char * /*child*/, const char * /*parent*/);
+
+/**
+ * Sort an array of strings with qsort.
+ *
+ * \param array Array of strings.
+ * \param len   Length of the array.
+ */
+extern void cs_qsort(char **array, size_t len);
 
 #endif /* LIBCASSAVA_STRING_H */
 /* vim: set cin ts=4 sw=4 et: */

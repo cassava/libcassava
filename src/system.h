@@ -101,12 +101,6 @@ extern bool filter_isreg(void *filepath, void *);
 
 extern bool filter_isdir(void *filepath, void *);
 
-struct filter_regex_args {
-    regex_t preg;
-};
-
-extern bool filter_regex(void *filepath, void *arguments);
-
 struct filter_time_args {
     time_t time;
     int comparison;

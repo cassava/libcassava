@@ -153,14 +153,13 @@ size_t list_filter(struct list_node **head, bool (*filter)(void *, void *), void
     assert(head != NULL);
     assert(filter != NULL);
 
-    struct list_node *current = NULL;
     struct list_node *iter = *head;
+    struct list_node *current = *head = NULL;
     size_t count = 0;
     while (iter != NULL) {
         if (filter(iter->data, arguments)) {
             if (current == NULL) {
-                current = iter;
-                *head = current;
+                *head = current = iter;
             } else {
                 current->next = iter;
                 current = current->next;

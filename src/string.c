@@ -1,5 +1,6 @@
 /*
  * libcassava/string.c
+ * vim: set cin ts=4 sw=4 et:
  *
  * Copyright (c) 2011-2012 Ben Morgan <neembi@googlemail.com>
  *
@@ -24,14 +25,14 @@
 #include <stdbool.h>
 #include <string.h>
 
+static int compare_str(const void *, const void *);
 
 char *cs_strclone(const char *input)
 {
-    size_t len;
-    char *clone;
+    assert(input != NULL);
 
-    len = strlen(input);
-    clone = malloc(sizeof (char) * (len+1));
+    size_t len = strlen(input);
+    char *clone = malloc(sizeof (char) * (len+1));
     if (clone != NULL)
         strcpy(clone, input);
     return clone;
@@ -39,11 +40,11 @@ char *cs_strclone(const char *input)
 
 char *cs_strcat(const char *f1, const char *f2)
 {
-    size_t len;
-    char *str;
+    assert(f1 != NULL);
+    assert(f2 != NULL);
 
-    len = strlen(f1);
-    str = malloc((len + strlen(f2) + 1) * sizeof (char));
+    size_t len = strlen(f1);
+    char *str = malloc((len + strlen(f2) + 1) * sizeof (char));
     if (str != NULL) {
         strcpy(str, f1);
         strcpy(str+len, f2);
@@ -166,4 +167,24 @@ bool cs_isprefix(const char *child, const char *parent)
     return true;
 }
 
-/* vim: set cin ts=4 sw=4 et: */
+void cs_qsort(char **array, size_t len)
+{
+    qsort(array, len, sizeof (char *), compare_str);
+}
+
+/**
+ * Comparison function for qsort() in cs_qsort().
+ *
+ * The actual arguments to this function are "pointers to
+ * pointers to char", but strcmp(3) arguments are "pointers
+ * to char", hence the following cast plus dereference.
+ *
+ * \param p1 String one.
+ * \param p2 String two.
+ * \return -1 if p1 < p2, 0 if p1 == p2, 1 if p1 > p2.
+ */
+static int compare_str(const void *p1, const void *p2)
+{
+    return strcmp(* (char * const *) p1, * (char * const *) p2);
+}
+

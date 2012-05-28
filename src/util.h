@@ -21,6 +21,9 @@
  * \file
  * Various utility functions that make use of libcassava.
  *
+ * In order to use this header file, your library must have the ceil() function
+ * available. In some systems, you need the \a libm math library.
+ *
  * \author Ben Morgan
  * \date 28. May 2012
  */

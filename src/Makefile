@@ -1,4 +1,4 @@
-CC = gcc
+CC = gcc -DNDEBUG
 CFLAGS = --std=c99 -g -Wall -Wextra -pedantic -fpic
 LFLAGS = -shared -fpic -Wl,-export-dynamic,-soname,libcassava.so.1
 
