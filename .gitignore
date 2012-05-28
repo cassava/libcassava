@@ -3,4 +3,5 @@ src/*.o
 src/libcassava.a
 src/libcassava.so
 src/tags
+src/test
 Doxywarn
