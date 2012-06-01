@@ -19,7 +19,10 @@
 
 #include <assert.h>
 #include <stdbool.h>
+#include <stdio.h>
+#include <string.h>
 
+#include "bitset.h"
 #include "debug.h"
 #include "list.h"
 #include "list_str.h"
@@ -101,6 +104,21 @@ void test_print_columns(char *path)
     list_free_all(&head);
 }
 
+//: bitset.h
+void test_bitset(const char *binstr)
+{
+    printf("test_bitset(%s)\n", binstr);
+
+    bitset_t *bs = new_bitset(strlen(binstr));
+    size_t count = 0;
+    while (*binstr != '\0')
+        set_bit(bs, count++, *binstr++ == '1' ? true : false);
+    size_t i = 0;
+    while (i < count)
+        putchar(get_bit(bs, i++) ? '1' : '0');
+    putchar('\n');
+}
+
 
 int main(int argc, char **argv)
 {
@@ -110,17 +128,26 @@ int main(int argc, char **argv)
     if (argc > 1)
         path = argv[1];
 
+    goto bitset;
+
+string:
     puts("testing string.h functions...");
     test_strclone(path);
 
+list:
     puts("testing list.h functions...");
     test_list_filter(path);
 
+system:
     puts("testing system.h functions...");
     test_get_filepaths(path);
     test_get_filenames(path);
     test_get_filenames_filter_regex(path);
     test_print_columns(path);
+
+bitset:
+    puts("testing bitset.h functions...");
+    test_bitset(path);
 
     return 0;
 }

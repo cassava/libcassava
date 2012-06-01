@@ -2,7 +2,7 @@ CC = gcc -DNDEBUG
 CFLAGS = --std=c99 -g -Wall -Wextra -pedantic -fpic
 LFLAGS = -shared -fpic -Wl,-export-dynamic,-soname,libcassava.so.1
 
-objects = config_kv.o list.o list_str.o string.o util.o system.o
+objects = config_kv.o list.o list_str.o string.o util.o system.o bitset.o
 
 .PHONY: all clean check library
 
@@ -42,6 +42,9 @@ util.o: list.h list_str.h string.h util.h util.c
 
 system.o: system.h system.c
 	${CC} ${CFLAGS} -c system.c
+
+bitset.o: bitset.h bitset.c
+	${CC} ${CFLAGS} -c bitset.c
 
 clean:
 	for file in ${objects} tags libcassava.a libcassava.so test; do \
