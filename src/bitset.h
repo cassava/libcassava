@@ -33,23 +33,30 @@
  *
  * <b>Example Usage:</b>
  * \code
- *   #include <cassava/bitset.h>  // for new_bitset, get_bit, set_bit
- *   #include <stdbool.h>         // for bool
- *   #include <stdlib.h>          // for size_t
- *   #include <stdio.h>           // for putchar
- *   #include <string.h>          // for strlen
- *
- *   char *binstr = "010101010101";
- *   bitset_t *bs = new_bitset(strlen(binstr));
- *   size_t count = 0;
- *   while (*binstr != '\0')
- *       set_bit(bs, count++, *binstr++ == '1' ? true : false);
- *   size_t i = 0;
- *   while (i < count)
- *       putchar(get_bit(bs, i++) ? '1' : '0');
- *   putchar('\n');
- *   free(bs);
+ *     #include <cassava/bitset.h>  // for new_bitset, get_bit, set_bit
+ *     #include <stdbool.h>         // for bool
+ *     #include <stdlib.h>          // for size_t
+ *     #include <stdio.h>           // for putchar
+ *     #include <string.h>          // for strlen
+ *  
+ *     int main()
+ *     {
+ *         char *binstr = "010101010101";
+ *         bitset_t *bs = new_bitset(strlen(binstr));
+ *         size_t count = 0;
+ *         while (*binstr != '\0')
+ *             set_bit(bs, count++, *binstr++ == '1' ? true : false);
+ *         size_t i = 0;
+ *         while (i < count)
+ *             putchar(get_bit(bs, i++) ? '1' : '0');
+ *         putchar('\n');
+ *         free(bs);
+ *         return 0;
+ *     }
  * \endcode
+ *
+ * \author Ben Morgan
+ * \date 1. June 2012
  */
 
 #ifndef LIBCASSAVA_BITSET_H

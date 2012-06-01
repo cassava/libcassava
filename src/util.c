@@ -24,9 +24,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "string.h"
 #include "system.h"
-#include "debug.h"
 
 static unsigned sum_over(const size_t *array, size_t len);
 static void putfill(const char *string, size_t size);
@@ -72,7 +70,6 @@ void print_columns(char **array, size_t len)
 
     /* Print the strings in columns: */
     /* TODO: prevent printing of two spaces at the end! */
-    debug_printf("len = %u, num_cols = %u, num_rows = %u\n", len, num_cols, num_rows);
     for (row = 0; row < num_rows; row++) {
         for (col = 0; col < num_cols; col++) {
             size_t idx = pos(col, row);
