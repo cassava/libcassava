@@ -2,7 +2,7 @@ PREFIX = /usr/local
 LIB_DIR = ${PREFIX}/lib
 INCLUDE_DIR = ${PREFIX}/include
 
-VERSION = 1.0.0
+VERSION = 1.1.0
 
 .PHONY: all lib install uninstall clean dist doc
 

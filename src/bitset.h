@@ -1,5 +1,5 @@
 /*
- * bitset.h
+ * libcassava/bitset.h
  * vim: set cindent expandtab tabstop=4 shiftwidth=4 colorcolumn=81:
  *
  * Copyright (c) 2012 Ben Morgan <neembi@googlemail.com>
@@ -17,6 +17,41 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+/**
+ * \file
+ * Defines functions for manipulating a set of bits.
+ *
+ * These functions are derived from the bitset class in C++.
+ * The function definitions are so short that they could even be inline, but at
+ * the moment they just aren't. Look at the source if you want and incorporate
+ * it that way into your program if you want them inline (or as macros).
+ *
+ * The implementation is simple; we have an array of unsigned ints and we use
+ * bit operators to manipulate the individual bits in each of these unsigned
+ * integers, plus a little arithmetic to calculate which int we need from the
+ * array.
+ *
+ * <b>Example Usage:</b>
+ * \code
+ *   #include <cassava/bitset.h>  // for new_bitset, get_bit, set_bit
+ *   #include <stdbool.h>         // for bool
+ *   #include <stdlib.h>          // for size_t
+ *   #include <stdio.h>           // for putchar
+ *   #include <string.h>          // for strlen
+ *
+ *   char *binstr = "010101010101";
+ *   bitset_t *bs = new_bitset(strlen(binstr));
+ *   size_t count = 0;
+ *   while (*binstr != '\0')
+ *       set_bit(bs, count++, *binstr++ == '1' ? true : false);
+ *   size_t i = 0;
+ *   while (i < count)
+ *       putchar(get_bit(bs, i++) ? '1' : '0');
+ *   putchar('\n');
+ *   free(bs);
+ * \endcode
+ */
+
 #ifndef LIBCASSAVA_BITSET_H
 #define LIBCASSAVA_BITSET_H
 
@@ -25,7 +60,18 @@
 
 typedef unsigned int bitset_t;
 
-bitset_t *new_bitset(size_t elements);
+/**
+ * Returns a newly allocated bitset, with space for at least \a size elements.
+ *
+ * How much more space there might be varies from machine to machine; on some
+ * machines it might range from 0 to 63 for example, depending on the value of
+ * \a size.
+ *
+ * \param size Number of bits which can be stored.
+ * \return Pointer to newly allocated (with malloc) bitset.
+ * \note The result of this function must be at some point freed.
+ */
+bitset_t *new_bitset(size_t size);
 
 /**
  * Get a bit stored at position \a pos in the bitset \a array.

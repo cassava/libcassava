@@ -32,11 +32,15 @@ bitset_t *new_bitset(size_t elements)
 
 bool get_bit(const bitset_t *array, size_t pos)
 {
+    assert(array != NULL);
+
     return array[ARRAY_INDEX(pos)] & 1U << (pos % BITS_IN_UNIT);
 }
 
 void set_bit(bitset_t *array, size_t pos, bool value)
 {
+    assert(array != NULL);
+
     if (value)
         array[ARRAY_INDEX(pos)] |= (bitset_t) 1 << (pos % BITS_IN_UNIT);
     else

@@ -117,6 +117,7 @@ void test_bitset(const char *binstr)
     while (i < count)
         putchar(get_bit(bs, i++) ? '1' : '0');
     putchar('\n');
+    free(bs);
 }
 
 
