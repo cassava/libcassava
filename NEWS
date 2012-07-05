@@ -1,6 +1,9 @@
 NEWS: LIBCASSAVA                                                    15.03.2012
 ===============================================================================
 
+# 1.2.0  (27. June 2012)
+Adding the function basename.
+
 # 0.1.0  (15. March 2012)
 Marks the first library release of libcassava. The following header files are
 of interest, and are located in ${PREFIX}/lib/libcassava:

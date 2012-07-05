@@ -1,6 +1,6 @@
 # Maintainer: Ben Morgan <neembi@googlemail.com>
 pkgname=libcassava
-pkgver=0.1.0
+pkgver=1.2.0
 pkgrel=1
 pkgdesc="Collection of various C functions created and used by user cassava."
 arch=('i686 x86_64')

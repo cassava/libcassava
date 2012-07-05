@@ -15,18 +15,41 @@
  * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
+
+/**
+ * \file
+ *
+ * This file defines macros similar to \e assert.h that assist in
+ * running debugging code and printing statements.
+ *
+ * If the macro \p NDEBUG is \e not defined, then the three following
+ * \b macros are enabled:
+ *
+ *   \li debug(...)
+ *   \li debug_puts(str)
+ *   \li debug_printf(...)
+ *
+ * \warning The macros are \e not identical to their implied counterparts,
+ * for example debug_puts() and debug_printf() \e require the first
+ * argument to be a character literal (as the preprocessor is used to
+ * concatenate several character literals).
+ *
+ * \example
+ * \code
+ *     ...
+ *     char *str = get_my_string();
+ *     debug_puts(str);            // error
+ *     debug_printf("%s\n", str);  // correct
+ *     ...
+ *     debug(puts(str));           // also correct
+ *     ...
+ * \endcode
+ */
+
 #ifndef DEBUG_H
 #define DEBUG_H
 
-#ifdef NDEBUG
-
-#define VOID_POINTER_CAST_ (void) (0)
-
-#define debug(...) VOID_POINTER_CAST_
-#define debug_puts(str) VOID_POINTER_CAST_
-#define debug_printf(...) VOID_POINTER_CAST_
-
-#else
+#ifndef NDEBUG
 
 #include <stdio.h>
 
@@ -37,6 +60,14 @@
 #define debug(...) __VA_ARGS__
 #define debug_puts(str) puts(DEBUG_FILENO_ str)
 #define debug_printf(...) fprintf(stderr, DEBUG_FILENO_ __VA_ARGS__)
+
+#else /* NDEBUG defined */
+
+#define VOID_POINTER_CAST_ (void) (0)
+
+#define debug(...) VOID_POINTER_CAST_
+#define debug_puts(str) VOID_POINTER_CAST_
+#define debug_printf(...) VOID_POINTER_CAST_
 
 #endif /* NDEBUG */
 

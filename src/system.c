@@ -20,6 +20,7 @@
 #include "system.h"
 
 #include <dirent.h>
+#include <libgen.h>
 #include <regex.h>
 #include <stdbool.h>
 #include <stdio.h>
@@ -48,6 +49,22 @@ unsigned short get_terminal_columns()
     struct winsize w;
     ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
     return w.ws_col;
+}
+
+const char *cs_basename(const char *path)
+{
+    static char buffer[BUFSIZ];
+    strncpy(buffer, path, BUFSIZ);
+
+    return basename(buffer);
+}
+
+const char *cs_dirname(const char *path)
+{
+    static char buffer[BUFSIZ];
+    strncpy(buffer, path, BUFSIZ);
+
+    return dirname(buffer);
 }
 
 int read_directory(const char *path, NodeStr **head, bool full_pathnames)

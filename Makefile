@@ -2,7 +2,7 @@ PREFIX = /usr/local
 LIB_DIR = ${PREFIX}/lib
 INCLUDE_DIR = ${PREFIX}/include
 
-VERSION = 1.1.0
+VERSION = 1.2.0
 
 .PHONY: all lib install uninstall clean dist doc
 
@@ -16,12 +16,12 @@ doc:
 	doxygen Doxyfile
 
 dist: lib
-	install -d dist
-	install -m644 src/*.h dist/
-	install -m644 src/libcassava.so dist/libcassava.so.${VERSION}
-	install -m644 src/libcassava.a dist/
+	install -d dist/include
+	install -m644 src/*.h dist/include/
+	install -m644 src/libcassava.so dist/include/libcassava.so.${VERSION}
+	install -m644 src/libcassava.a dist/include/
 
-install:
+install: lib
 	install -d ${INCLUDE_DIR}/libcassava
 	install -m644 src/*.h ${INCLUDE_DIR}/libcassava/
 	install -m755 src/libcassava.so ${LIB_DIR}/libcassava.so.${VERSION}

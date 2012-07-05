@@ -38,7 +38,7 @@
  *     #include <stdlib.h>          // for size_t
  *     #include <stdio.h>           // for putchar
  *     #include <string.h>          // for strlen
- *  
+ *
  *     int main()
  *     {
  *         char *binstr = "010101010101";

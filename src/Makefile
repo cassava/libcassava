@@ -1,5 +1,7 @@
-CC = gcc -DNDEBUG
-CFLAGS = --std=c99 -g -Wall -Wextra -pedantic -fpic
+CC = gcc -DNDEBUG ${COPTFLAGS}
+COPTFLAGS = -O2 -march=native
+CDEBUGFLAGS = -ftrapv -g -fstack-check -gnato
+CFLAGS = --std=c99 -Wall -Wextra -Wfloat-equal -Werror -pedantic -fpic
 LFLAGS = -shared -fpic -Wl,-export-dynamic,-soname,libcassava.so.1
 
 objects = config_kv.o list.o list_str.o string.o util.o system.o bitset.o
