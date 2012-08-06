@@ -1,6 +1,6 @@
 /*
  * libcassava/system.c
- * vim: set cin ts=4 sw=4 et:
+ * vim: set cin ts=4 sw=4 et cc=100:
  *
  * Copyright (c) 2012 Ben Morgan <neembi@googlemail.com>
  *
@@ -35,14 +35,46 @@
 #include "string.h"
 
 static inline int isdir(const char *path);
-extern inline int get_filenames(const char *path, NodeStr **head);
-extern inline int get_filepaths(const char *path, NodeStr **head);
-extern inline int get_filenames_filter(const char *path, NodeStr **head,
-        bool (*filter)(void *path, void *arguments), void *arguments);
-extern inline int get_filepaths_filter(const char *path, NodeStr **head,
-        bool (*filter)(void *path, void *arguments), void *arguments);
-extern inline int get_filepaths_filter_regex(const char *path, NodeStr **head, const char *regex);
-extern inline int get_filenames_filter_regex(const char *path, NodeStr **head, const char *regex);
+
+int get_filenames(const char *path, NodeStr **head)
+{
+    return read_directory(path, head, false);
+}
+
+int get_filepaths(const char *path, NodeStr **head)
+{
+    return read_directory(path, head, true);
+}
+
+int get_filenames_filter(const char *path, NodeStr **head, bool (*filter)(void *path, void *arguments), void *arguments)
+{
+    assert(filter != NULL);
+
+    int count = get_filenames(path, head);
+    if (count > 0)
+        count = list_filter(head, filter, arguments);
+    return count;
+}
+
+int get_filepaths_filter(const char *path, NodeStr **head, bool (*filter)(void *path, void *arguments), void *arguments)
+{
+    assert(filter != NULL);
+
+    int count = get_filepaths(path, head);
+    if (count > 0)
+        count = list_filter(head, filter, arguments);
+    return count;
+}
+
+int get_filepaths_filter_regex(const char *path, NodeStr **head, const char *regex)
+{
+    return read_directory_filter_regex(path, head, regex, true);
+}
+
+int get_filenames_filter_regex(const char *path, NodeStr **head, const char *regex)
+{
+    return read_directory_filter_regex(path, head, regex, false);
+}
 
 unsigned short get_terminal_columns()
 {

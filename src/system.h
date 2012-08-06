@@ -1,6 +1,6 @@
 /*
  * libcassava/system.h
- * vim: set cin ts=4 sw=4 et:
+ * vim: set cin ts=4 sw=4 et cc=80:
  *
  * Copyright (c) 2012 Ben Morgan <neembi@googlemail.com>
  *
@@ -101,55 +101,36 @@ extern const char *cs_basename(const char *path);
  */
 extern const char *cs_dirname(const char *path);
 
-extern int read_directory(const char *path, NodeStr **head, bool full_pathnames);
+extern int read_directory(const char *path,
+                          NodeStr **head,
+                          bool full_pathnames);
 
-inline int get_filenames(const char *path, NodeStr **head)
-{
-    return read_directory(path, head, false);
-}
+extern int get_filenames(const char *path, NodeStr **head);
 
-inline int get_filenames_filter(const char *path,
+extern int get_filenames_filter(const char *path,
                                 NodeStr **head,
                                 bool (*filter)(void *path, void *arguments),
-                                void *arguments)
-{
-    assert(filter != NULL);
+                                void *arguments);
 
-    int count = get_filenames(path, head);
-    if (count > 0)
-        count = list_filter(head, filter, arguments);
-    return count;
-}
+extern int get_filepaths(const char *path, NodeStr **head);
 
-inline int get_filepaths(const char *path, NodeStr **head)
-{
-    return read_directory(path, head, true);
-}
-
-inline int get_filepaths_filter(const char *path,
+extern int get_filepaths_filter(const char *path,
                                 NodeStr **head,
                                 bool (*filter)(void *path, void *arguments),
-                                void *arguments)
-{
-    assert(filter != NULL);
+                                void *arguments);
 
-    int count = get_filepaths(path, head);
-    if (count > 0)
-        count = list_filter(head, filter, arguments);
-    return count;
-}
+extern int read_directory_filter_regex(const char *path,
+                                       NodeStr **head,
+                                       const char *regex,
+                                       bool full_pathnames);
 
-extern int read_directory_filter_regex(const char *path, NodeStr **head, const char *regex, bool full_pathnames);
+extern int get_filepaths_filter_regex(const char *path,
+                                      NodeStr **head,
+                                      const char *regex);
 
-inline int get_filepaths_filter_regex(const char *path, NodeStr **head, const char *regex)
-{
-    return read_directory_filter_regex(path, head, regex, true);
-}
-
-inline int get_filenames_filter_regex(const char *path, NodeStr **head, const char *regex)
-{
-    return read_directory_filter_regex(path, head, regex, false);
-}
+extern int get_filenames_filter_regex(const char *path,
+                                      NodeStr **head,
+                                      const char *regex);
 
 extern bool filter_isreg(void *filepath, void *);
 
