@@ -37,9 +37,13 @@
 #ifndef LIBCASSAVA_LIST_H
 #define LIBCASSAVA_LIST_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+
 #include <stdbool.h>
 #include <stdlib.h>
-
 
 /**
  * \struct list_node
@@ -176,7 +180,7 @@ extern struct list_node *list_remove(struct list_node **head);
  *     {
  *         return strlen(str) > 0;
  *     }
- *  
+ *
  *     int main()
  *     {
  *         NodeStr *head = get_some_dynamic_list();
@@ -192,7 +196,7 @@ extern struct list_node *list_remove(struct list_node **head);
  *         int number;
  *         int comp;
  *     }
- *  
+ *
  *     bool filter_comp(int *element, struct filter_comp_args *arguments)
  *     {
  *         int comp = arguments->comp;
@@ -203,7 +207,7 @@ extern struct list_node *list_remove(struct list_node **head);
  *         else
  *             return *element == arguments->number;
  *     }
- *  
+ *
  *     int main()
  *     {
  *         // Ficticious code, but let's imagine it would work:
@@ -237,5 +241,10 @@ extern void list_free_nodes(struct list_node **head);
  *             It will become \c NULL after all this has been done.
  */
 extern void list_free_all(struct list_node **head);
+
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* LIBCASSAVA_LIST_H */

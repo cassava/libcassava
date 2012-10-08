@@ -27,6 +27,11 @@
 #ifndef LIBCASSAVA_CONFIG_KV_H
 #define LIBCASSAVA_CONFIG_KV_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+
 #include <stdbool.h>
 
 #define CONFIG_KV_NOERR  0
@@ -62,6 +67,9 @@ struct config_map {
  */
 extern int config_parse(const char *path, struct config_map tab[], bool fail);
 
-#endif /* LIBCASSAVA_CONFIG_KV_H */
 
-/* vim: set cin ts=4 sw=4 et: */
+#ifdef __cplusplus
+}
+#endif
+
+#endif /* LIBCASSAVA_CONFIG_KV_H */

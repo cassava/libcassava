@@ -31,6 +31,11 @@
 #ifndef LIBCASSAVA_LIST_STR_H
 #define LIBCASSAVA_LIST_STR_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+
 #include <regex.h>
 #include <stdbool.h>
 
@@ -123,5 +128,10 @@ extern bool filter_regex(void *string, void *arguments);
  * \b WARNING: nodes that do NOT match regex are completely freed: node and data.
  */
 extern int list_filter_regex(NodeStr **head, const char *regex);
+
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* LIBCASSAVA_LIST_STR_H */

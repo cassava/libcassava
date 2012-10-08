@@ -30,6 +30,11 @@
 #ifndef LIBCASSAVA_STRING_H
 #define LIBCASSAVA_STRING_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+
 #include <stdbool.h>
 #include <stdlib.h>
 
@@ -101,6 +106,11 @@ extern bool cs_isprefix(const char * /*child*/, const char * /*parent*/);
  * \param len   Length of the array.
  */
 extern void cs_qsort(char **array, size_t len);
+
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* LIBCASSAVA_STRING_H */
 /* vim: set cin ts=4 sw=4 et: */

@@ -34,11 +34,11 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#include <libcassava/list.h>
-#include <libcassava/list_str.h>
-#include <libcassava/string.h>
-#include <libcassava/system.h>
-#include <libcassava/util.h>
+#include <cassava/list.h>
+#include <cassava/list_str.h>
+#include <cassava/string.h>
+#include <cassava/system.h>
+#include <cassava/util.h>
 
 int list(const char *path)
 {

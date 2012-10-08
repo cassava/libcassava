@@ -62,6 +62,11 @@
 #ifndef LIBCASSAVA_BITSET_H
 #define LIBCASSAVA_BITSET_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+
 #include <stdbool.h>
 #include <stdlib.h>
 
@@ -93,5 +98,10 @@ bool get_bit(const bitset_t *array, size_t pos);
  * Behaviour is undefined if \a pos is outside of bitset array bounds.
  */
 void set_bit(bitset_t *array, size_t pos, bool value);
+
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* LIBCASSAVA_BITSET_H */

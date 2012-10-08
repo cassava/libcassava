@@ -21,12 +21,19 @@
  * \file
  * Functions that are pertinent to the system and the filesystem.
  *
+ * \TODO This header file severely needs to be better documented.
+ *
  * \author Ben Morgan
  * \date 29. June 2012
  */
 
 #ifndef LIBCASSAVA_SYSTEM_H
 #define LIBCASSAVA_SYSTEM_H
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 
 #include <assert.h>
 #include <regex.h>
@@ -142,5 +149,10 @@ struct filter_time_args {
 };
 
 extern bool filter_mtime(void *filepath, void *arguments);
+
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* LIBCASSAVA_SYSTEM_H */

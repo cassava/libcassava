@@ -31,6 +31,11 @@
 #ifndef LIBCASSAVA_UTIL_H
 #define LIBCASSAVA_UTIL_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+
 #include <stdlib.h>
 
 /** Define the width separating two columns for the function print_columns(). */
@@ -48,5 +53,10 @@
  * TODO Make this \a array \c const.
  */
 extern void print_columns(char **array, size_t len);
+
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* LIBCASSAVA_UTIL_H */
